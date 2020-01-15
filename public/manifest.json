@@ -1,6 +1,6 @@
 {
-  "short_name": "My Extension",
-  "name": "My Extension",
+  "short_name": "SOS",
+  "name": "Stack Overflow Question Enhancer",
   "version": "1.0",
   "manifest_version": 2,
   "background": {
@@ -9,7 +9,7 @@
   "browser_action": {},
   "content_scripts" : [
     {
-      "matches": [ "<all_urls>" ],
+      "matches": [ "https://stackoverflow.com/questions/ask" ],
       "css": ["/static/css/app.css"],
       "js": ["/static/js/content.js"]
     }
