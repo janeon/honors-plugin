@@ -2,31 +2,21 @@
 /* src/content.js */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Frame, { FrameContextConsumer } from 'react-frame-component';
+import Frame, { FrameContextConsumer }from 'react-frame-component';
 import "./content.css";
 
 class Main extends React.Component {
-  constructor(props) {
-      super(props);
-      this.title = document.getElementById('post-title').childNodes[1].childNodes[3].childNodes[1];
-      this.editor = document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].value
-      console.log(this.editor);
-      this.title.focus();
-      this.inner = ""
-      
-      var snippet_pattern = /```.*?```/gus;
-  }
-
-
     render() {
         return (
-            <Frame head={[<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL("/static/css/content.css")} ></link>]}>
+            <Frame head={[<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL("/static/css/content.css")} ></link>]}> 
                <FrameContextConsumer>
                {
+               // Callback is invoked with iframe's window and document instances
                    ({document, window}) => {
+                      // Render Children
                         return (
                            <div className={'my-extension'}>
-                               <h2>Construction Tips</h2>
+                               <h1>Hello world - My first Extension</h1>
                            </div>
                         )
                     }
