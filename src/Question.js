@@ -27,12 +27,10 @@ export default class Question extends Component {
   }
 
   onClick() {
-    if (! this.show_answers) {
+    if (!this.show_answers) {
       Array.from(this.state.answer_ids).map((answer_id, index) => {
         axios.get(`https://api.stackexchange.com/2.2/answers/`+ answer_id+ `?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=hY9*cg5149D6VioJ9)bvog((`)
           .then(answers_obj => {
-            console.log();
-        //     // var data =
             this.setState({answers: this.state.answers + '<li>'+answers_obj.data.items[0].body+'</li>'});
           })
       })
