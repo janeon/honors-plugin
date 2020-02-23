@@ -1,3 +1,8 @@
 button {
   float: right
 }
+
+.answers {
+  overflow-y: scroll;
+  max-height: 15em
+}
