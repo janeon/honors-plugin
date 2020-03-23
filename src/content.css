@@ -11,3 +11,13 @@
 .so-extension h2{
     text-align: center;
 }
+
+.icon {
+  max-height: 1.5em;
+  max-width: 1.5em;
+  position: relative;
+}
+
+.wrapperDiv {
+  display: inline;
+}

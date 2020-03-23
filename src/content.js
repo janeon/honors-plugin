@@ -1,11 +1,11 @@
 /*global chrome*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Frame, {
-  FrameContextConsumer
-} from 'react-frame-component';
+import Frame, { FrameContextConsumer } from 'react-frame-component';
 import Questions from './Questions';
-import "./content.css";
+import styles from "./content.css";
+import {faCode, faExpandAlt} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class Main extends React.Component {
     constructor(props) {
@@ -13,29 +13,13 @@ class Main extends React.Component {
       var title = document.getElementById('post-title').childNodes[1].childNodes[3].childNodes[1];
       var editor = document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].value
       title.focus();
-
-      if (/```.*?```/gus.exec(editor)) {
-        this.snippet = " Woohoo you've included a code snippet!"
-      } else {
-        this.snippet = " Hey, could you possibly add some code for context?"
-      }
-
-      if (editor.length < 1350) {
-        this.length = " The body's a bit short, give some more description perhaps? "
-      } else {
-        this.length += " Now that's a good amount of content "
-      }
-      // var questionsDom = document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[0].childNodes[1].childNodes
-      // console.log(questionsDom);
-
-      // for (var node in questionsDom) {
-      //   console.log(node);
-      // }
+      this.snippet = (/```.*?```/gus.exec(editor)) ? " Woohoo you've included a code snippet!" : " Any relevant code snippets to add?";
+      this.length = (editor.length < 1350) ? " The body's a bit short, can it be more descriptive? " : " Now that's a good amount of content ";
     }
 
     componentDidMount() {
 
-      // First we need to find the id of each suggested question, extracted from the question post urls
+      // First we find the id of each suggested question, extracted from the question post urls
       // Then create a questions div / component for each question
       // within each question the list of answers need to be queried via asios (answers component receives question id as part of its props)
 
@@ -50,9 +34,15 @@ class Main extends React.Component {
                         return (
                            <div className={'so-extension'}>
                                <h2>Construction Tips</h2>
-                               <div>{this.snippet}</div>
-                               <div></div>
-                               <div>{this.length}</div>
+                                 <div className={"wrapperDiv"}>
+                                   <FontAwesomeIcon icon={faCode} className={"icon"}/>
+                                   {this.snippet}&nbsp;
+                                 </div>
+                                 <br></br>
+                                 <div className={"wrapperDiv"}>
+                                   <FontAwesomeIcon icon={faExpandAlt} className={"icon"}/>
+                                   {this.length}&nbsp;
+                                 </div>
                                <Questions/>
                            </div>
                         )

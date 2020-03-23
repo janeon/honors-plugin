@@ -46,9 +46,9 @@ export default class Question extends Component {
     return (
       <div className = "question">
       <ul>
+      <button onClick = {(e) => this.onClick()} > {this.state.answer_ids.length} answers</button>
       <li>
       {this.question.childNodes[3].childNodes[1].childNodes[1].textContent}
-      <button onClick = {(e) => this.onClick()} > {this.state.answer_ids.length} answers</button>
       </li>
       <div className = "answers"><ol dangerouslySetInnerHTML = {{__html: this.state.answers}} ></ol></div>
       </ul>

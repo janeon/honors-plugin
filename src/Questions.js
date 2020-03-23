@@ -20,15 +20,15 @@ export default class Questions extends Component {
 
   render() {
     this.questions = this.state.questions.map((question, index) => {
-      if (index % 2 !== 0) {
+      if (index % 2) {
         return <Question question = {question}/>
       }
     });
-    return (
-      <div className="questions" onClick={(e) => this.onClick()}>
+    return ( 
+      <div className="questions">
         <h2>Similar Questions</h2>
-        Click to load similar questions
-        {this.questions}
+        <div><button onClick={(e) => this.onClick()} className="similar">Load similar questions</button></div>
+        <div>{this.questions}</div>
       </div>
     )
   }
