@@ -1,14 +1,10 @@
 /* src/content.css */
 
-.so-extension{
-
-}
-
-.so-extension h1{
+.so-extension h1 {
     color: #000;
 }
 
-.so-extension h2{
+.so-extension h2 {
     text-align: center;
 }
 
@@ -16,8 +12,14 @@
   max-height: 1.5em;
   max-width: 1.5em;
   position: relative;
+  padding: 0em 1em;
 }
 
 .wrapperDiv {
   display: inline;
+}
+
+.prediction {
+  text-align: center;
+  color: rgb(155,155,155);
 }

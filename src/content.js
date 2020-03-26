@@ -1,48 +1,134 @@
 /*global chrome*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Frame, { FrameContextConsumer } from 'react-frame-component';
+import Frame, {
+  FrameContextConsumer
+} from 'react-frame-component';
 import Questions from './Questions';
 import styles from "./content.css";
-import {faCode, faExpandAlt} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCode, faExpandAlt, faEraser} from "@fortawesome/free-solid-svg-icons";
+import {
+  FontAwesomeIcon
+} from '@fortawesome/react-fontawesome'
 
 class Main extends React.Component {
     constructor(props) {
       super(props);
+      this.predictions = {
+        '000': 0.5,
+        '001': 0.5556,
+        '010': 0.5316,
+        '100': 0.8951,
+        '011': 0.5866,
+        '110': 0.9064,
+        '101': 0.9143,
+        '111': 0.9237
+      }
       var title = document.getElementById('post-title').childNodes[1].childNodes[3].childNodes[1];
-      var editor = document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].value
       title.focus();
-      this.snippet = (/```.*?```/gus.exec(editor)) ? " Woohoo you've included a code snippet!" : " Any relevant code snippets to add?";
-      this.length = (editor.length < 1350) ? " The body's a bit short, can it be more descriptive? " : " Now that's a good amount of content ";
+      this.updateAttributes = this.updateAttributes.bind(this);
+      this.callback = this.callback.bind(this);
+      this.state = { body : "" }
     }
 
+    updateAttributes() {
+      if (/```.*?```/gus.exec(this.state.body)) {
+        this.snippet = " Woohoo that's a beautiful code snippet!";
+        this.code_presence = 1
+      } else {
+        this.snippet = " Any relevant code snippets to add?";
+        this.code_presence = 0
+      }
+
+      if (this.state.body.length < 1350) {
+        this.length = " The body's a bit short, can it be more descriptive? "
+        this.length_presence = 0
+      } else {
+        this.length = " Loads of content ==> lots more views!  ";
+        this.length_presence = 1
+      }
+
+      var attempt_signifying_words = ["attempt", "try", "tried", "tries"]
+      this.attempt_presence = 0
+      var used_words = []
+      for (var word of attempt_signifying_words) {
+        if (this.state.body.includes(word)) {
+          used_words.push(word)
+        }
+      }
+      if (used_words.length) {
+        this.attempt_presence = 1
+        this.attmpts_text = "Nice tries! Attempts detected from words: "
+        for (var word of used_words) {
+          this.attmpts_text += " "+ word
+        }
+      }
+      else {
+        this.attmpts_text = "Can you desribe anything you've tried so far?"
+      }
+
+      var binary_features = this.code_presence.toString() + this.length_presence.toString() + this.attempt_presence.toString()
+      this.prediction = this.predictions[binary_features].toString()
+      console.log(binary_features);
+    }
+
+    callback(mutationsList, observer) {
+      // console.log(document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[4].childNodes[1].childNodes[1].value);
+      this.setState({ body: document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[4].childNodes[1].childNodes[1].value });
+      this.updateAttributes()
+    }
     componentDidMount() {
-
       // First we find the id of each suggested question, extracted from the question post urls
-      // Then create a questions div / component for each question
-      // within each question the list of answers need to be queried via asios (answers component receives question id as part of its props)
+      // Then a question div / component is created for each question
+      // within each question the list of answers are queried via asios (answers component receives question id as part of its props)
 
+      // this.editor = document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].value
+      this.setState({ body: document.getElementById('post-editor').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].value});
+
+      const targetNode = document.getElementById('post-editor');
+      // Options for the observer (which mutations to observe)
+      const config = { attributes: true, childList: true, subtree: true};
+
+      // Create an observer instance linked to the callback function
+      var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+      this.observer = new MutationObserver(this.callback);
+
+      // Start observing the target node for configured mutations
+      this.observer.observe(targetNode, config);
+    }
+
+    componentDidUnmount() {
+      this.observer.disconnect();
     }
 
     render() {
         return (
             <Frame head={[<link type="text/css" rel="stylesheet" href={chrome.runtime.getURL("/static/css/content.css")} ></link>]}>
                <FrameContextConsumer>
-               {
-                   ({document, window}) => {
+               {({document, window}) => {
                         return (
                            <div className={'so-extension'}>
+                               <h2>Answerability Prediction</h2>
+                               <h3 className={"prediction"}>{this.prediction * 100}%</h3>
+
                                <h2>Construction Tips</h2>
                                  <div className={"wrapperDiv"}>
                                    <FontAwesomeIcon icon={faCode} className={"icon"}/>
                                    {this.snippet}&nbsp;
                                  </div>
+
                                  <br></br>
                                  <div className={"wrapperDiv"}>
                                    <FontAwesomeIcon icon={faExpandAlt} className={"icon"}/>
                                    {this.length}&nbsp;
                                  </div>
+
+                                 <br></br>
+                                 <div className={"wrapperDiv"}>
+                                   <FontAwesomeIcon icon={faEraser} className={"icon"}/>
+                                   {this.attmpts_text}&nbsp;
+                                 </div>
+                                 
                                <Questions/>
                            </div>
                         )
