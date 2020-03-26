@@ -40,9 +40,7 @@ In Chrome browser, go to chrome://extensions page and switch on developer mode. 
 
 Now click on the `LOAD UNPACKED` and browse to `honors-plugin\build` , this will install the app as a Chrome extension.
 
-When you go to any website and click on extension icon, injected page will toggle.
-
-<img src="https://cdn-images-1.medium.com/max/1600/1*bXJYfvrcHDWKwUZCrPI-8w.png" />
+When you go to Stack Overflow's ask page and click on extension icon, the injected page will toggle.
 
 ## License
 
