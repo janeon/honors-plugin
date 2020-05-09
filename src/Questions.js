@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Question from './Question';
-
+import styles from "./content.css";
 export default class Questions extends Component {
-  // really a class of similar questions, each of which contain answers
+  // a class of similar questions, each of which contain answers
   constructor(props) {
     super(props);
     this.state = {
@@ -12,24 +12,37 @@ export default class Questions extends Component {
   }
 
   onClick() {
-    var questions = document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[0].childNodes[1].childNodes
-    if (this.state.questions.length == 0) {
+    // console.log(document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes); //.childNodes[1].childNodes
+    // console.log(document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].childNodes[1]); //.childNodes[1].childNodes
+    // var questions = document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[0].childNodes[1].childNodes
+    var questions = document.getElementById('question-form').childNodes[1].childNodes[3].childNodes[3].childNodes[1].childNodes[1].childNodes[1].children
+    // console.log(questions);
+    if (!this.state.questions.length) {
       this.setState({questions: Array.from(questions)});
+    }
+    else {
+      this.setState({questions: []});
     }
   }
 
   render() {
     this.questions = this.state.questions.map((question, index) => {
-      if (index % 2) {
         return <Question question = {question}/>
-      }
+
     });
-    return ( 
-      <div className="questions">
-        <h2>Similar Questions</h2>
-        <div><button onClick={(e) => this.onClick()} className="similar">Load similar questions</button></div>
-        <div>{this.questions}</div>
+    return (
+      <div>
+        <br></br>
+        <div className="heading">
+        <button>
+        <h3 onClick={(e) => this.onClick()}>Similar Questions</h3>
+        </button>
+        </div>
+        <div className="questions">
+        {this.questions}
+        </div>
       </div>
+
     )
   }
 }

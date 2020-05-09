@@ -29,6 +29,14 @@ class Main extends React.Component {
       this.updateAttributes = this.updateAttributes.bind(this);
       this.callback = this.callback.bind(this);
       this.state = { body : "" }
+      var totalProgress, progress;
+    	const circles = document.querySelectorAll('.progress');
+    	for(var i = 0; i < circles.length; i++) {
+    		totalProgress = circles[i].querySelector('circle').getAttribute('stroke-dasharray');
+    		progress = circles[i].parentElement.getAttribute('data-percent');
+
+    		circles[i].querySelector('.bar').style['stroke-dashoffset'] = totalProgress * progress / 100;
+    	}
     }
 
     updateAttributes() {
@@ -58,18 +66,18 @@ class Main extends React.Component {
       }
       if (used_words.length) {
         this.attempt_presence = 1
-        this.attmpts_text = "Nice tries! Attempts detected from words: "
+        this.attempts_message = "Nice tries! Attempts detected from words: "
         for (var word of used_words) {
-          this.attmpts_text += " "+ word
+          this.attempts_message += " "+ word
         }
       }
       else {
-        this.attmpts_text = "Can you desribe anything you've tried so far?"
+        this.attempts_message = "Can you desribe anything you've tried so far?"
       }
 
       var binary_features = this.code_presence.toString() + this.length_presence.toString() + this.attempt_presence.toString()
       this.prediction = this.predictions[binary_features].toString()
-      console.log(binary_features);
+      // console.log(binary_features);
     }
 
     callback(mutationsList, observer) {
@@ -108,27 +116,43 @@ class Main extends React.Component {
                {({document, window}) => {
                         return (
                            <div className={'so-extension'}>
-                               <h2>Answerability Prediction</h2>
-                               <h3 className={"prediction"}>{this.prediction * 100}%</h3>
 
-                               <h2>Construction Tips</h2>
+
+                           <div className={"progressBar"}>
+                           <div class={"c100 p"+(this.prediction * 100).toFixed(0).toString()+" small"}>
+                               <span>{(this.prediction * 100).toFixed(0).toString()}%</span>
+                               <div class="slice">
+                                   <div class="bar"></div>
+                                   <div class="fill"></div>
+                               </div>
+                           </div>
+                           &nbsp;
+                           <h3>Answerability Prediction</h3>
+                           &nbsp;
+                           </div>
+                               <h3>Construction Tips</h3>
                                  <div className={"wrapperDiv"}>
-                                   <FontAwesomeIcon icon={faCode} className={"icon"}/>
-                                   {this.snippet}&nbsp;
+                                      <FontAwesomeIcon icon={faCode} className={"icon" + (this.code_presence ? 'Good' : 'Bad')}/>
+                                      {this.snippet}
+                                   &nbsp;
                                  </div>
 
                                  <br></br>
                                  <div className={"wrapperDiv"}>
-                                   <FontAwesomeIcon icon={faExpandAlt} className={"icon"}/>
-                                   {this.length}&nbsp;
+                                   <FontAwesomeIcon icon={faExpandAlt} className={"icon" + (this.length_presence ? 'Good' : 'Bad')}/>
+                                   {this.length}
+                                   &nbsp;
                                  </div>
 
                                  <br></br>
                                  <div className={"wrapperDiv"}>
-                                   <FontAwesomeIcon icon={faEraser} className={"icon"}/>
-                                   {this.attmpts_text}&nbsp;
+                                   <nobr>
+                                   <FontAwesomeIcon icon={faEraser} className={"icon" + (this.attempt_presence ? 'Good' : 'Bad')}/>
+                                  {this.attempts_message}
+                                   </nobr>
+                                   &nbsp;
                                  </div>
-                                 
+                                 <br></br>
                                <Questions/>
                            </div>
                         )
@@ -139,6 +163,8 @@ class Main extends React.Component {
         )
     }
 }
+
+
 
 const app = document.createElement('div');
 app.id = "so-extension-root";
@@ -154,6 +180,11 @@ chrome.runtime.onMessage.addListener(
         toggle();
       }
    }
+
+
+
+
+
 );
 
 function toggle(){
